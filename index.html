@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>лаба7</title>
+</head>
+<body>
+    <h1> Экземпляры приложения</h1>
+    
+    <h2>Добавить новый экземпляр</h2>
+    <form action="/add_instance" method="post">
+      <label for="ip">IP:</Label>
+      <input type="text" id="ip" name="ip" placeholder="IP" required>
+      <label for="port">Port:</label>
+      <input type="number" id="port" name="port" placeholder="Port" required>
+      <button type="submit">Добавить</button>
+    </form>
+    
+    <h2>Удалить экземпляр</h2>
+    <form action="/remove_instance" method="post">
+      <input type="number" id="index" name="index" placeholder="Index" required>
+      <button type="submit">Удалить</button>
+    </form>
+    
+    <h2>Текущие экземпляры</h2>
+    <ul>
+        {% for instance in instances %}
+            <li>{{ loop.index }}: {{ instance.ip }}:{{ instance.port }} ({{ instance.status }})</li>
+        {% endfor %}
+  
+  </body> 
+                .then(response => response.json())
+                .then(data => {
+                    const list = document.getElementById('instanceList');
+                    list.innerHTML = '';
+                    data.instances.forEach((instance, index) => {
+                        const li = document.createElement('li');
+                        li.textContent = instance;
+
+                        // Кнопка для удаления инстанса
+                        const button = document.createElement('button');
+                        button.textContent = 'Remove';
+                        button.onclick = () => {
+                            fetch('/remove_instance', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ index })
+                            }).then(() => updateInstanceList());
+                        };
+
+                        li.appendChild(button);
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        // Автоматическое обновление списка каждые 5 секунд
+        setInterval(updateInstanceList, 5000);
+    </script>
+</body>
+</html>
